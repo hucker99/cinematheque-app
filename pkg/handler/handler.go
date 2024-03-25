@@ -22,23 +22,22 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-in", h.signIn)
 	}
 
-	api := router.Group("/api")
+	api := router.Group("/api", h.userIdentity)
 	{
 		films := api.Group("/films")
 		{
 			films.POST("/", h.createFilm)
-			films.GET("/", h.getAllFilms)
-			films.GET("/:id", h.getFilmByFragment)
+			films.GET("/sort/:sort_by", h.getAllFilms)
+			films.GET("/fragment/:fragment", h.getFilmByFragment)
 			films.PUT("/:id", h.updateFilm)
 			films.DELETE("/:id", h.deleteFilm)
-
-			actor := films.Group(":id/actors")
-			{
-				actor.POST("/", h.createActor)
-				actor.GET("/", h.getAllActors)
-				actor.PUT("/:actor_id", h.updateActor)
-				actor.DELETE("/:actor_id", h.deleteActor)
-			}
+		}
+		actor := api.Group("/actors")
+		{
+			actor.POST("/", h.createActor)
+			actor.GET("/", h.getAllActors)
+			actor.PUT("/:id", h.updateActor)
+			actor.DELETE("/:id", h.deleteActor)
 		}
 	}
 	return router

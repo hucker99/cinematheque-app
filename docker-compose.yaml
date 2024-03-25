@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  cinematheque-app:
+    build: ./
+    command: ./wait-for-postgres.sh db ./cinematheque-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - DB_PASSWORD=qwerty
+
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=qwerty
+    ports:
+      - "5436:5432"
